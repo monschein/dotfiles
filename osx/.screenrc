@@ -1,0 +1,32 @@
+# Turn off copyright page
+startup_message off
+
+# Ensure 256 color compat
+term tmux-256color
+
+# Fix backgroun (yast)
+defbce on
+
+# Scrollback
+defscrollback 10000
+termcapinfo xterm* ti@:te@
+
+#Bottom status bar (old is commented out)
+#hardstatus alwayslastline "%{rk}%H %{gk}%c %{yk}%M%d %{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%?"
+hardstatus alwayslastline '%{= G}[%H]%{y} [Load: %l] %= %{= d}%-w%{+b y}%n*%t%{-b g}%{w}%+w %= %{C}[ %C:%s %A ] %{+b w}%D%{-b w} %{R}[ %Y.%m.%d ]'
+#hardstatus alwayslastline '%{= G}[%H%{y} %l] %= %{= d}%-w%{+b y}%n*%t%{-b g}%{w}%+w %= %{C}[ %C:%s %A ] %{+b w}%D%{-b w} %{R}[ %Y.%m.%d ]'
+#hardstatus alwayslastline '%{= M} %H%{= G} %l %= %{= w}%-w%{+b r}%n*%t%{-b r}%{w}%+w %= %{c}%d %D %{B}%c
+
+screen 0
+screen 1
+screen 2
+
+# Turn off Bell
+vbell off
+
+# Select first screen
+select 0
+
+# Change screen/windows with ctrl+left or right arrrow keys (after ctrl+a)
+bindkey ^[[1;5D prev
+bindkey ^[[1;5C next
