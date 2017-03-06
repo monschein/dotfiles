@@ -1,0 +1,4 @@
+linux/.weechat/ssl/OFTC.crt
+linux/.weechat/ssl/OFTC.key
+linux/.weechat/ssl/OFTC.pem
+*.DS_Store

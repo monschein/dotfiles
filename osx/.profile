@@ -1,5 +1,4 @@
 ## Exports
-#export PS1="[\u@\[\e[0;33m\]\h \[\e[1;37m\]\W\[\e[0m\]]$ "
 export PS1="[\u@\[\e[38;5;10m\]\h \[\e[1;37m\]\W\[\e[0m\]]$ "
 export CLICOLOR=1
 #export TERM=screen-256color
@@ -11,18 +10,25 @@ export HISTSIZE=2000
 export HISTFILESIZE=10000
 export HISTCONTROL=ignoredups
 export PATH=$PATH:/Users/dmonschein/dev_workspace/hss-config:/Users/dmonschein/vbin:/usr/local/opt:/usr/local/sbin
+export VAGRANT_DEFAULT_PROVIDER='virtualbox'
+# Export Text Editor
 
 ## >> ALIASES 
 alias l='/usr/local/bin/gls -AlhF --color=yes --group-directories-first'
 alias chss='/Users/dmonschein/vbin/i2cssh/bin/i2cssh'
 alias dev='cd /Users/dmonschein/dev_workspace'
 alias grep='grep --color=auto'
+alias gsurr='git submodule update --remote --recursive'
+alias grum='git rebase gold/master'
+alias gfr='git fetch gold && git rebase gold/master'
 alias rm='rm -i'
 alias lservices='systemctl list-unit-files --type=service'
 alias psh='pssh -v -i -l root -h' $1 $2
+alias pcs='scp -S hss'
 alias quicksniff='tcpdump -s0 -n -w ~/$(date +%Y%m%d)-$HOSTNAME-capture.pcap -i' $1
 alias walk='snmpwalk -Os -v2c -c public $1'
 alias repoupdate='for mydir in ~/dev_workspace/*; do cd $mydir && git pull gold master && git push; done'
+alias saft='/Users/dmonschein/dev_workspace/saft/saft.py'
 alias stat='/usr/local/bin/gstat'
 alias sync='git fetch gold; git checkout master; git merge gold/master'
 
@@ -33,6 +39,16 @@ cd /Users/dmonschein/dev_workspace/ansible
 source /Users/dmonschein/vbin/ansible/hacking/env-setup
 }
 
+function ans_ceph {
+export ANSIBLE_CONFIG=/Users/dmonschein/dev_workspace/ansible-ceph/config/ansible.cfg
+cd /Users/dmonschein/dev_workspace/ansible-ceph
+source /Users/dmonschein/vbin/ansible/hacking/env-setup
+}
+
+function grid {
+mylist=$1
+chss -f $mylist.txt -p i2cssh
+}
 
 function genpass {
 echo -n "Date + sha512sum: "
@@ -108,3 +124,4 @@ do
     echo -e ${o:${#o}-3:3} `tput setaf $i;tput setab $i`${y// /=}$x
 done
 }
+
