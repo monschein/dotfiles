@@ -34,9 +34,11 @@ export HISTSIZE=1000
 export HISTFILESIZE=10000
 export HISTCONTROL=ignoredups
 export HISTTIMEFORMAT="%d/%m/%y %T "
-export PATH=/usr/local/opt/python/libexec/bin:$PATH:/Users/dmonschein/dev_workspace/hss-config:/Users/dmonschein/personal_workspace:/usr/local/opt:/usr/local/sbin:/usr/local/opt/ruby/bin
-export JENKINS_API_KEY=fake
+#export PATH=/usr/local/opt/python/libexec/bin:$PATH:/Users/dmonschein/dev_workspace/hss-config:/Users/dmonschein/personal_workspace:/usr/local/opt:/usr/local/sbin:/usr/local/opt/ruby/bin
+#export PATH=$PATH:/Users/dmonschein/dev_workspace/hss-config:/Users/dmonschein/personal_workspace:/usr/local/opt:/usr/local/sbin:/usr/local/opt/ruby/bin
+export PATH=/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.6.0/bin:/Users/dmonschein/dev_workspace/hss-config:/Users/dmonschein/personal_workspace:$PATH
 export VAGRANT_DEFAULT_PROVIDER='virtualbox'
+export GITHUB_URL=https://bits.linode.com/
 
 ## >> ALIASES 
 alias l='/usr/local/bin/gls -AlhF --color=yes --group-directories-first'
@@ -57,16 +59,24 @@ alias pcs='scp -S hss'
 alias quicksniff='tcpdump -s0 -n -w ~/$(date +%Y%m%d)-$HOSTNAME-capture.pcap -i' $1
 alias walk='snmpwalk -Os -v2c -c public $1'
 alias repoupdate='for mydir in ~/dev_workspace/*; do cd $mydir && git pull gold master && git push; done'
-alias saft='/Users/dmonschein/dev_workspace/saft/saft.py'
 alias stat='/usr/local/bin/gstat'
 alias sync='git fetch gold; git checkout master; git merge gold/master'
 alias vclean='vagrant global-status --prune'
+alias cephdash='ssh -L 5000:localhost:5000 root@bs5-cjj1'
+alias weather='curl wttr.in/08083'
+alias whatslistening='ss -atpu'
 
 ## >> FUNCTIONS
+function bmc {
+BMCHOST=$1
+cd /Users/dmonschein/personal_workspace/smcipmitool
+java -Djava.library.path=. -jar iKVM.jar $BMCHOST $USERNAME $PASSWORD  null 5900 2623 2 0
+}
 
 function ans {
 export ANSIBLE_CONFIG=/Users/dmonschein/dev_workspace/ansible-playbooks/config/ansible.cfg
 #export PATH=/Users/dmonschein/personal_workspace/ansible/bin:/Users/dmonschein/personal_workspace/ansible/test/runner:$PATH
+#export PATH=/usr/bin:$PATH
 cd /Users/dmonschein/dev_workspace/ansible-playbooks
 source /Users/dmonschein/personal_workspace/ansible/hacking/env-setup
 }
@@ -94,9 +104,28 @@ top
 EOF
 }
 
+function dcls {
+cat << EOF
+'dal1': 2
+'fnc1': 3
+'atl1': 4
+'cjj1': 6
+'lon1': 7
+'fch1': 8
+'sin1': 9
+'fra1': 10
+'shg1': 11
+'cjj2': 12
+'phl1': 13
+'mum1': 14
+'tor1': 15
+EOF
+}
+
 function grid {
 mylist=$1
-chss -A -f $mylist
+#chss -A -f $mylist
+chss -f $mylist
 }
 
 function newlinode {
@@ -117,6 +146,15 @@ git pull --rebase
 git submodule update --init --recursive
 }
 
+function bsdowntime {
+    DC=$1
+    START=$2
+    END=$3
+    for i in $(eval echo "{$START..$END}"); do
+        echo "@linagios downtime bs$i-$DC 1h";
+    done
+}
+
 function file {
 /usr/bin/file $1
 /usr/local/bin/grealpath $1
@@ -124,6 +162,16 @@ function file {
 
 function ntpscan {
 pssh -v -i -l root -h /Users/dmonschein/dev_workspace/hostlists/ntp_hosts.txt 'ntpq -np'
+}
+
+function mysed {
+# classic sed in-file string replacement. create backup file
+old_string=$1
+new_string=$2
+myfile=$3
+
+sed -i .bak "s/$old_string/$new_string/g" $myfile
+
 }
 
 function return-limits {
@@ -183,4 +231,4 @@ done
 }
 
 
-export PATH="$HOME/.cargo/bin:$PATH"
+#export PATH="$HOME/.cargo/bin:$PATH"
