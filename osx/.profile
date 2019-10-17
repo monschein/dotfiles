@@ -37,6 +37,7 @@ export HISTTIMEFORMAT="%d/%m/%y %T "
 #export PATH=/usr/local/opt/python/libexec/bin:$PATH:/Users/dmonschein/dev_workspace/hss-config:/Users/dmonschein/personal_workspace:/usr/local/opt:/usr/local/sbin:/usr/local/opt/ruby/bin
 #export PATH=$PATH:/Users/dmonschein/dev_workspace/hss-config:/Users/dmonschein/personal_workspace:/usr/local/opt:/usr/local/sbin:/usr/local/opt/ruby/bin
 export PATH=/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.6.0/bin:/Users/dmonschein/dev_workspace/hss-config:/Users/dmonschein/personal_workspace:$PATH
+export JENKINS_API_KEY=yeet
 export VAGRANT_DEFAULT_PROVIDER='virtualbox'
 export GITHUB_URL=https://bits.linode.com/
 
@@ -45,7 +46,7 @@ alias l='/usr/local/bin/gls -AlhF --color=yes --group-directories-first'
 alias agent='ssh-add /Users/dmonschein/.ssh/id_rsa'
 alias bigdirs='find . -type d -exec du -Shxa {} + | sort -rh | head -n 15'
 alias bigfiles='find . -type f -exec du -Shxa {} + | sort -rh | head -n 15'
-alias chss='/Users/dmonschein/personal_workspace/i2cssh/bin/i2cssh'
+alias chss='/Users/dmonschein/personal_workspace/i2cssh/bin/i2cssh --profile i2cssh'
 alias dev='cd /Users/dmonschein/dev_workspace'
 alias grep='grep --color=auto'
 alias gsurr='git submodule update --remote --recursive'
@@ -53,24 +54,29 @@ alias grum='git rebase gold/master'
 alias gfr='git fetch gold && git rebase gold/master'
 alias rm='rm -i'
 alias lservices='systemctl list-unit-files --type=service'
-alias nmap-full='nmap -p 1-65535 -sV -sS -T4' $1
+alias nmap_full='nmap -p 1-65535 -sV -sS -T4' $1
+alias pipupgrade='pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U'
 alias psh='pssh -v -i -l root -h' $1 $2
 alias pcs='scp -S hss'
 alias quicksniff='tcpdump -s0 -n -w ~/$(date +%Y%m%d)-$HOSTNAME-capture.pcap -i' $1
 alias walk='snmpwalk -Os -v2c -c public $1'
 alias repoupdate='for mydir in ~/dev_workspace/*; do cd $mydir && git pull gold master && git push; done'
+alias saft='/Users/dmonschein/Library/Python/2.7/bin/saft'
 alias stat='/usr/local/bin/gstat'
 alias sync='git fetch gold; git checkout master; git merge gold/master'
 alias vclean='vagrant global-status --prune'
 alias cephdash='ssh -L 5000:localhost:5000 root@bs5-cjj1'
+alias saltenc="gpg2 -a --encrypt -r 'Linode Sysops Salt' -r 'Linode Sysops Salt Staging'"
 alias weather='curl wttr.in/08083'
 alias whatslistening='ss -atpu'
 
 ## >> FUNCTIONS
 function bmc {
 BMCHOST=$1
+USER=$2
+PASS=$3
 cd /Users/dmonschein/personal_workspace/smcipmitool
-java -Djava.library.path=. -jar iKVM.jar $BMCHOST $USERNAME $PASSWORD  null 5900 2623 2 0
+java -Djava.library.path=. -jar iKVM.jar $BMCHOST $USER $PASS  null 5900 2623 2 0
 }
 
 function ans {
@@ -172,6 +178,10 @@ myfile=$3
 
 sed -i .bak "s/$old_string/$new_string/g" $myfile
 
+}
+
+function mylinodes {
+    linode-cli linodes list --text | awk '{print $2, $7 }'
 }
 
 function return-limits {
